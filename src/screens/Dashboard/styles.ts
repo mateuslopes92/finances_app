@@ -1,8 +1,11 @@
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 
+import { Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import styled from 'styled-components/native';
+
+const DEVICE_WIDTH = Dimensions.get("window").width;
 
 export const Header = styled.View`
   width: 100%;
@@ -57,9 +60,29 @@ export const LogoffIcon = styled(Feather)`
 export const HighlightCards = styled.ScrollView.attrs({
   horizontal: true, 
   showsHorizontalScrollIndicator: false,
-  contentContainerStyle: { paddingLeft: 24 }
+  contentContainerStyle: { paddingLeft: 24 },
+  decelerationRate: 'fast', 
+  snapToInterval: DEVICE_WIDTH - 32,
+  snapToAlignment: 'center'
 })`
   width: 100%;
   position: absolute;
   margin-top: ${RFPercentage(20)}px;
 `;
+
+export const Transactions = styled.View`
+  flex: 1;
+  padding: 0 24px;
+  margin-top: ${RFPercentage(10)}px;
+`;
+
+export const TransactionsTitle = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.regular};
+  font-size: ${RFValue(18)}px;
+  margin-bottom: 16px;
+`;
+
+export const TransactionList = styled.FlatList`
+  
+`;
+

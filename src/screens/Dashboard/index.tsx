@@ -3,18 +3,56 @@ import {
   HighlightCards,
   LogoffIcon,
   Photo,
+  TransactionList,
+  Transactions,
+  TransactionsTitle,
   User,
   UserGreeting,
   UserInfo,
   UserName,
   UserWrapper
 } from './styles';
+import TransactionCard, { TransactionCardProps } from '../../components/TransactionCard';
 
 import Container from '../../components/Container';
 import HighlightCard from '../../components/HighlightCard';
 import React from 'react';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
 
 const Dashboard: React.FC = () => {
+  const data = [
+    {
+      type: 'positive',
+      title: "App feature development",
+      amount: "$10,000",
+      category: {
+        name: 'Jobs',
+        icon: 'dollar-sign'
+      },
+      date: "10/05/2022"
+    },
+    {
+      type: 'negative',
+      title: "Lunch",
+      amount: "$300",
+      category: {
+        name: 'Food',
+        icon: 'dollar-sign'
+      },
+      date: "10/05/2022"
+    },
+    {
+      type: 'negative',
+      title: "Rent",
+      amount: "$1,000",
+      category: {
+        name: 'Home',
+        icon: 'dollar-sign'
+      },
+      date: "10/05/2022"
+    },
+  ];
+
   return (
     <Container>
       <Header>
@@ -51,6 +89,22 @@ const Dashboard: React.FC = () => {
           type="total"
         />
       </HighlightCards>
+
+      <Transactions>
+        <TransactionsTitle>List of transactions</TransactionsTitle>
+        <TransactionList
+          data={data}
+          renderItem={({ item }) => (
+            <TransactionCard
+              data={item}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: getBottomSpace()
+          }}
+        />
+      </Transactions>
     </Container>
   )
 };

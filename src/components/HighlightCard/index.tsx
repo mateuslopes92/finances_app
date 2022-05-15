@@ -30,15 +30,15 @@ const HighlightCard: React.FC<HighlightCardProps> = ({
   type
  }) => {
   return (
-    <CardContainer>
+    <CardContainer type={type}>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardIcon name={icon[type]} />
+        <CardTitle type={type}>{title}</CardTitle>
+        <CardIcon name={icon[type]} type={type} />
       </CardHeader>
 
       <CardContent>
-        <Amount>{amount}</Amount>
-        <LastTransaction>
+        <Amount type={type}>{amount}</Amount>
+        <LastTransaction type={type}>
           {lastTransaction}
         </LastTransaction>
       </CardContent>
