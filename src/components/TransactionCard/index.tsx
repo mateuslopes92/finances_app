@@ -11,29 +11,30 @@ import {
 
 import React from 'react';
 
-export type CategoryProps = { 
+export interface CategoryProps { 
   name: string,
   icon: string
 }
 
-export type TransactionCardProps = {
-  data: {
-    type: 'positive' | 'negative',
-    title: string,
-    amount: string,
-    category: CategoryProps,
-    date: string
-  }
+export interface TransactionCardDataProps {
+  type: 'positive' | 'negative',
+  title: string,
+  amount: string,
+  category: CategoryProps,
+  date: string
+}
+
+export interface TransactionCardProps {
+  data: TransactionCardDataProps
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({ data }) => {
   return (
     <Container>
       <CardTitle>{data.title}</CardTitle>
-      <Amount type={data.type} >
-        {
-          data.amount
-        }
+      <Amount type={data.type}>
+        {data.type === 'negative' && '- '}
+        {data.amount}
       </Amount>
 
       <CardFooter>

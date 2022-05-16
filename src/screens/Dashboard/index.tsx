@@ -12,16 +12,20 @@ import {
   UserName,
   UserWrapper
 } from './styles';
-import TransactionCard, { TransactionCardProps } from '../../components/TransactionCard';
+import TransactionCard, { TransactionCardDataProps } from '../../components/TransactionCard';
 
 import Container from '../../components/Container';
 import HighlightCard from '../../components/HighlightCard';
 import React from 'react';
-import { getBottomSpace } from 'react-native-iphone-x-helper';
+
+export interface DataListProps extends TransactionCardDataProps { 
+  id: string 
+}
 
 const Dashboard: React.FC = () => {
-  const data = [
+  const data: DataListProps[] = [
     {
+      id: '1',
       type: 'positive',
       title: "App feature development",
       amount: "$10,000",
@@ -32,22 +36,24 @@ const Dashboard: React.FC = () => {
       date: "10/05/2022"
     },
     {
+      id: '2',
       type: 'negative',
       title: "Lunch",
       amount: "$300",
       category: {
         name: 'Food',
-        icon: 'dollar-sign'
+        icon: 'coffee'
       },
       date: "10/05/2022"
     },
     {
+      id: '3',
       type: 'negative',
       title: "Rent",
       amount: "$1,000",
       category: {
         name: 'Home',
-        icon: 'dollar-sign'
+        icon: 'shopping-bag'
       },
       date: "10/05/2022"
     },
@@ -92,17 +98,14 @@ const Dashboard: React.FC = () => {
 
       <Transactions>
         <TransactionsTitle>List of transactions</TransactionsTitle>
-        <TransactionList
+        <TransactionList<any>
           data={data}
-          renderItem={({ item }) => (
+          keyExtractor={(item: DataListProps) => item}
+          renderItem={({ item }: {item: TransactionCardDataProps}) => (
             <TransactionCard
               data={item}
             />
           )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: getBottomSpace()
-          }}
         />
       </Transactions>
     </Container>

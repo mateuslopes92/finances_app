@@ -10,7 +10,7 @@ import {
 
 import React from 'react';
 
-export type HighlightCardProps = {
+export interface HighlightCardProps {
   title: string,
   amount: string,
   lastTransaction: string,
