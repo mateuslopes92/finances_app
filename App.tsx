@@ -8,6 +8,7 @@ import {
 import AppLoading from 'expo-app-loading';
 import Dashboard from './src/screens/Dashboard';
 import React from 'react';
+import Register from './src/screens/Register';
 import { ThemeProvider } from 'styled-components';
 import theme from './src/global/styles/theme';
 
@@ -24,7 +25,8 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Dashboard />
+      {/* <Dashboard /> */}
+      <Register />
     </ThemeProvider>
   );
 };

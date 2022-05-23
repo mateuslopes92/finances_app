@@ -1,4 +1,5 @@
 import {
+  Container,
   Header,
   HighlightCards,
   LogoffIcon,
@@ -14,7 +15,6 @@ import {
 } from './styles';
 import TransactionCard, { TransactionCardDataProps } from '../../components/TransactionCard';
 
-import Container from '../../components/Container';
 import HighlightCard from '../../components/HighlightCard';
 import React from 'react';
 
@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
         <TransactionsTitle>List of transactions</TransactionsTitle>
         <TransactionList<any>
           data={data}
-          keyExtractor={(item: DataListProps) => item}
+          keyExtractor={(item: DataListProps) => item.id}
           renderItem={({ item }: {item: TransactionCardDataProps}) => (
             <TransactionCard
               data={item}
