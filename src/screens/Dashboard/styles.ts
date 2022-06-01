@@ -2,6 +2,7 @@ import { Dimensions, FlatList } from 'react-native';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
 
+import { BorderlessButton } from 'react-native-gesture-handler';
 import { DataListProps } from '.';
 import { Feather } from '@expo/vector-icons';
 import styled from 'styled-components/native';
@@ -65,10 +66,10 @@ export const LogoffIcon = styled(Feather)`
 `;
 
 export const HighlightCards = styled.ScrollView.attrs({
-  horizontal: true, 
+  horizontal: true,
   showsHorizontalScrollIndicator: false,
   contentContainerStyle: { paddingLeft: 24 },
-  decelerationRate: 'fast', 
+  decelerationRate: 'fast',
   snapToInterval: DEVICE_WIDTH - 32,
   snapToAlignment: 'center'
 })`
@@ -97,6 +98,8 @@ export const TransactionList = styled(
     paddingBottom: getBottomSpace()
   }
 })`
-  
+
 `;
+
+export const LogoutButton = styled(BorderlessButton)``;
 

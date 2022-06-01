@@ -3,6 +3,7 @@ import {
   Header,
   HighlightCards,
   LogoffIcon,
+  LogoutButton,
   Photo,
   TransactionList,
   Transactions,
@@ -18,8 +19,8 @@ import TransactionCard, { TransactionCardDataProps } from '../../components/Tran
 import HighlightCard from '../../components/HighlightCard';
 import React from 'react';
 
-export interface DataListProps extends TransactionCardDataProps { 
-  id: string 
+export interface DataListProps extends TransactionCardDataProps {
+  id: string
 }
 
 const Dashboard: React.FC = () => {
@@ -70,27 +71,29 @@ const Dashboard: React.FC = () => {
               <UserName>Mateus</UserName>
             </User>
           </UserInfo>
-          
-          <LogoffIcon name="power" />
+
+          <LogoutButton onPress={() => {}}>
+            <LogoffIcon name="power" />
+          </LogoutButton>
         </UserWrapper>
       </Header>
 
       <HighlightCards>
-        <HighlightCard 
-          title="Income" 
-          amount="$10.000" 
+        <HighlightCard
+          title="Income"
+          amount="$10.000"
           lastTransaction="Last incomming at day 15 of may"
           type="up"
         />
-        <HighlightCard 
-          title="Outcome" 
-          amount="$5.000" 
+        <HighlightCard
+          title="Outcome"
+          amount="$5.000"
           lastTransaction="Last outcome at day 5 of may"
           type="down"
         />
-        <HighlightCard 
-          title="Total" 
-          amount="$5.000" 
+        <HighlightCard
+          title="Total"
+          amount="$5.000"
           lastTransaction="01 to 16 of may"
           type="total"
         />

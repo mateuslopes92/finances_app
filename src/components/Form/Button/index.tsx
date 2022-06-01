@@ -4,15 +4,15 @@ import {
 } from './styles';
 
 import React from 'react';
-import { TouchableOpacityProps } from 'react-native';
+import { RectButtonProps } from 'react-native-gesture-handler';
 
-interface ButtonProps extends TouchableOpacityProps {
+interface ButtonProps extends RectButtonProps {
   title: string
 }
 
-const Button: React.FC<ButtonProps> = ({ title }) => {
+const Button: React.FC<ButtonProps> = ({ title, ...props }) => {
   return (
-    <Container>
+    <Container {...props}>
       <Title>{title}</Title>
     </Container>
   );
