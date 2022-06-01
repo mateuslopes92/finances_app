@@ -14,15 +14,18 @@ import {
   Title,
   TransactionsType
 } from './styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../components/Form/Button';
 import CategorySelect from '../CategorySelect';
 import CategorySelectButton from '../../components/Form/CategorySelectButton';
 import InputForm from '../../components/Form/InputForm';
 import TransactionTypeButton from '../../components/Form/TransactionTypeButton';
 import { useForm } from 'react-hook-form';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
+import uuid from 'react-native-uuid';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 interface FormData {
@@ -43,13 +46,14 @@ const schema = Yup.object().shape({
 
 const Register: React.FC = () => {
   const { colors} = useTheme();
+  const navigation = useNavigation();
   const [transactionType, setTransactionType] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [category, setCategory] = useState({
     key: 'category',
     name: 'Category'
   });
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(schema)
   });
 
@@ -65,7 +69,7 @@ const Register: React.FC = () => {
     setModalOpen(false);
   }
 
-  const handleRegister = (data: FormData) => {
+  const handleRegister = async (data: FormData) => {
     if(!transactionType){
       return Alert.alert('Select the type of transaction');
     }
@@ -73,13 +77,41 @@ const Register: React.FC = () => {
       return Alert.alert('Select the category');
     }
 
-    const dataFormated = {
+    const newTransaction = {
+      id: String(uuid.v4()),
       name: data.name,
       price: data.price,
       category,
-      transactionType
+      transactionType,
+      date: new Date()
     };
-    console.log(dataFormated);
+
+    try {
+      const dataKey = '@financesapp:transactions';
+
+      const dataStored = await AsyncStorage.getItem(dataKey);
+      const dataStoredParsed = dataStored ? JSON.parse(dataStored) : [];
+
+      const dataList = [
+        ...dataStoredParsed,
+        newTransaction
+      ];
+
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataList));
+
+      setTransactionType('');
+      setCategory({
+        key: 'category',
+        name: 'Category'
+      });
+      reset();
+
+      navigation.navigate('List');
+
+    } catch (error) {
+      console.log(error);
+      Alert.alert('An error occurred saving the entry')
+    }
   }
 
   return (
