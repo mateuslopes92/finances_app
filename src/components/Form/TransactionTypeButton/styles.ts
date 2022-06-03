@@ -5,10 +5,10 @@ import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 interface IconProps {
-  type: 'up' | 'down',
+  type: 'positive' | 'negative',
 }
 interface ContainerProps {
-  type: 'up' | 'down',
+  type: 'positive' | 'negative',
   isActive: boolean
 }
 
@@ -20,11 +20,11 @@ export const Container = styled(RectButton)<ContainerProps>`
   border: 1.5px solid ${({ theme }) => theme.colors.text};
   padding: 16px;
   border-radius: 5px;
-  ${({ isActive, type }) => isActive && type === 'down' && css`
+  ${({ isActive, type }) => isActive && type === 'negative' && css`
     background-color: ${({ theme }) => theme.colors.error_light};
     border: 0;
   `}
-  ${({ isActive, type }) => isActive && type === 'up' && css`
+  ${({ isActive, type }) => isActive && type === 'positive' && css`
     background-color: ${({ theme }) => theme.colors.success_light};
     border: 0;
   `}
@@ -34,7 +34,7 @@ export const Icon = styled(Feather)<IconProps>`
   font-size: ${RFValue(24)}px;
   margin-right: 12px;
   color: ${(props) =>
-    props.type === 'up'
+    props.type === 'positive'
       ? props.theme.colors.success
       : props.theme.colors.error
   };

@@ -21,7 +21,7 @@ export const CardTitle = styled.Text`
 export const Amount = styled.Text<TransactionProps>`
   font-size: ${RFValue(20)}px;
   font-family: ${({ theme }) => theme.fonts.regular};
-  margin-top: 2px;
+  margin-top: 4px;
   color: ${({ theme, type }) => type === 'negative' ? theme.colors.error : theme.colors.success};
 `;
 
@@ -33,6 +33,7 @@ export const CardFooter = styled.View`
 `;
 
 export const Category = styled.View`
+  width: 50%;
   flex-direction: row;
   align-items: center;
 `;

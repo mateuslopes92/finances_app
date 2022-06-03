@@ -10,17 +10,13 @@ import {
 } from './styles';
 
 import React from 'react';
-
-export interface CategoryProps { 
-  name: string,
-  icon: string
-}
+import { categories } from '../../utils/categories';
 
 export interface TransactionCardDataProps {
   type: 'positive' | 'negative',
-  title: string,
-  amount: string,
-  category: CategoryProps,
+  name: string,
+  price: string,
+  category: string,
   date: string
 }
 
@@ -29,18 +25,20 @@ export interface TransactionCardProps {
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({ data }) => {
+  const category = categories.filter(item => item.key === data.category)[0];
+
   return (
     <Container>
-      <CardTitle>{data.title}</CardTitle>
+      <CardTitle>{data.name}</CardTitle>
       <Amount type={data.type}>
         {data.type === 'negative' && '- '}
-        {data.amount}
+        {data.price}
       </Amount>
 
       <CardFooter>
         <Category>
-          <Icon name={data.category.icon} />
-          <CategoryName>{data.category.name}</CategoryName>
+          <Icon name={category.icon} />
+          <CategoryName>{category.name}</CategoryName>
         </Category>
         <Date>{data.date}</Date>
       </CardFooter>

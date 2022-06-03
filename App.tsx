@@ -1,3 +1,7 @@
+import 'intl';
+import 'intl/locale-data/jsonp/en-US';
+import 'react-native-gesture-handler';
+
 import {
   Poppins_400Regular,
   Poppins_500Medium,

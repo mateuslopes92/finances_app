@@ -14,7 +14,7 @@ import {
   Title,
   TransactionsType
 } from './styles';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../components/Form/Button';
@@ -44,6 +44,8 @@ const schema = Yup.object().shape({
     .required('The price is required')
 })
 
+const DATA_KEY = '@financesapp:transactions';
+
 const Register: React.FC = () => {
   const { colors} = useTheme();
   const navigation = useNavigation();
@@ -57,7 +59,8 @@ const Register: React.FC = () => {
     resolver: yupResolver(schema)
   });
 
-  const handleTransactionTypeSelect = (type: 'up' | 'down') => {
+
+  const handleTransactionTypeSelect = (type: 'positive' | 'negative') => {
     setTransactionType(type);
   };
 
@@ -81,15 +84,13 @@ const Register: React.FC = () => {
       id: String(uuid.v4()),
       name: data.name,
       price: data.price,
-      category,
-      transactionType,
+      category: category.key,
+      type: transactionType,
       date: new Date()
     };
 
     try {
-      const dataKey = '@financesapp:transactions';
-
-      const dataStored = await AsyncStorage.getItem(dataKey);
+      const dataStored = await AsyncStorage.getItem(DATA_KEY);
       const dataStoredParsed = dataStored ? JSON.parse(dataStored) : [];
 
       const dataList = [
@@ -97,7 +98,7 @@ const Register: React.FC = () => {
         newTransaction
       ];
 
-      await AsyncStorage.setItem(dataKey, JSON.stringify(dataList));
+      await AsyncStorage.setItem(DATA_KEY, JSON.stringify(dataList));
 
       setTransactionType('');
       setCategory({
@@ -142,16 +143,16 @@ const Register: React.FC = () => {
             />
             <TransactionsType>
               <TransactionTypeButton
-                type='up'
+                type='positive'
                 title='Income'
-                isActive={transactionType === 'up'}
-                onPress={() => handleTransactionTypeSelect('up')}
+                isActive={transactionType === 'positive'}
+                onPress={() => handleTransactionTypeSelect('positive')}
                 />
               <TransactionTypeButton
-                type='down'
+                type='negative'
                 title='Outcome'
-                isActive={transactionType === 'down'}
-                onPress={() => handleTransactionTypeSelect('down')}
+                isActive={transactionType === 'negative'}
+                onPress={() => handleTransactionTypeSelect('negative')}
               />
             </TransactionsType>
             <CategorySelectButton

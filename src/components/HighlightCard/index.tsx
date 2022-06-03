@@ -14,16 +14,16 @@ export interface HighlightCardProps {
   title: string,
   amount: string,
   lastTransaction: string,
-  type: 'up' | 'down' | 'total'
+  type: 'positive' | 'negative' | 'total'
 }
 
 const icon = {
-  up: 'arrow-up-circle',
-  down: 'arrow-down-circle',
+  positive: 'arrow-up-circle',
+  negative: 'arrow-down-circle',
   total: 'dollar-sign'
 }
 
-const HighlightCard: React.FC<HighlightCardProps> = ({ 
+const HighlightCard: React.FC<HighlightCardProps> = ({
   title,
   amount,
   lastTransaction,

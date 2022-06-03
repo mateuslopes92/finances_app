@@ -14,51 +14,79 @@ import {
   UserName,
   UserWrapper
 } from './styles';
+import React, { useCallback, useEffect, useState } from 'react';
 import TransactionCard, { TransactionCardDataProps } from '../../components/TransactionCard';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import HighlightCard from '../../components/HighlightCard';
-import React from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export interface DataListProps extends TransactionCardDataProps {
   id: string
 }
 
+interface Highli
+
+// interface HighLightData {
+//   entries: {
+//     amount: string;
+//   },
+//   expensives: {
+//     amount: string;
+//   }
+//   entries: {
+//     amount: string;
+//   }
+// }
+
+const DATA_KEY = '@financesapp:transactions';
+
 const Dashboard: React.FC = () => {
-  const data: DataListProps[] = [
-    {
-      id: '1',
-      type: 'positive',
-      title: "App feature development",
-      amount: "$10,000",
-      category: {
-        name: 'Jobs',
-        icon: 'dollar-sign'
-      },
-      date: "10/05/2022"
-    },
-    {
-      id: '2',
-      type: 'negative',
-      title: "Lunch",
-      amount: "$300",
-      category: {
-        name: 'Food',
-        icon: 'coffee'
-      },
-      date: "10/05/2022"
-    },
-    {
-      id: '3',
-      type: 'negative',
-      title: "Rent",
-      amount: "$1,000",
-      category: {
-        name: 'Home',
-        icon: 'shopping-bag'
-      },
-      date: "10/05/2022"
-    },
-  ];
+  const [ transactions, setTransactions ] = useState<DataListProps[]>([]);
+  const [ highlightData, setHighlightData ] = useState();
+  let entriesSum = 0;
+  let expensiveTotal = 0;
+
+  const loadTransaction = async () => {
+    const response = await AsyncStorage.getItem(DATA_KEY);
+    const transactions = response ? JSON.parse(response) : [];
+
+    const transactionsFormated: DataListProps[] = transactions.map((item: DataListProps) => {
+      if(item.type === 'positive'){
+        entriesSum += Number(item.price);
+      } else {
+        entriesSum -= Number(item.price);
+      }
+
+      const price = Number(item.price).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+
+      const date = Intl.DateTimeFormat('en-US', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      }).format(new Date(item.date));
+      console.log(item)
+
+      return {
+        ...item,
+        price,
+        date
+      }
+    });
+
+    setTransactions(transactionsFormated);
+  };
+
+  useEffect(() => {
+    loadTransaction();
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    loadTransaction();
+  },[]));
 
   return (
     <Container>
@@ -83,17 +111,17 @@ const Dashboard: React.FC = () => {
           title="Income"
           amount="$10.000"
           lastTransaction="Last incomming at day 15 of may"
-          type="up"
+          type="positive"
         />
         <HighlightCard
           title="Outcome"
           amount="$5.000"
           lastTransaction="Last outcome at day 5 of may"
-          type="down"
+          type="negative"
         />
         <HighlightCard
           title="Total"
-          amount="$5.000"
+          amount={String(entriesSum)}
           lastTransaction="01 to 16 of may"
           type="total"
         />
@@ -102,7 +130,7 @@ const Dashboard: React.FC = () => {
       <Transactions>
         <TransactionsTitle>List of transactions</TransactionsTitle>
         <TransactionList<any>
-          data={data}
+          data={transactions}
           keyExtractor={(item: DataListProps) => item.id}
           renderItem={({ item }: {item: TransactionCardDataProps}) => (
             <TransactionCard
