@@ -1,3 +1,4 @@
+import Balance from '../screens/Balance/index';
 import Dashboard from '../screens/Dashboard';
 import { MaterialIcons } from '@expo/vector-icons'
 import { Platform } from 'react-native';
@@ -51,7 +52,7 @@ const Routes: React.FC = () => {
       />
       <Screen
         name='Balance'
-        component={Register}
+        component={Balance}
         options={{
           tabBarIcon: (({ size, color }) =>
             <MaterialIcons

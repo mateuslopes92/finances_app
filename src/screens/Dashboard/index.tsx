@@ -29,7 +29,8 @@ export interface DataListProps extends TransactionCardDataProps {
 }
 
 interface HighlightProps {
-  amount: string
+  amount: string,
+  lastTransaction: string
 }
 
 interface HighLightData {
@@ -45,6 +46,19 @@ const Dashboard: React.FC = () => {
   const [ transactions, setTransactions ] = useState<DataListProps[]>([]);
   const [ highlightData, setHighlightData ] = useState<HighLightData>({} as HighLightData);
   const theme = useTheme();
+
+  const getLastTransactionDate = (
+    collection: DataListProps[],
+    type: 'positive' | 'negative'
+    ) => {
+    const lastTransaction = new Date(Math.max.apply(Math, collection
+      .filter(transaction => transaction.type === type)
+      .map(transaction => new Date(transaction.date).getTime())));
+
+    return `${lastTransaction.getDate()} of ${lastTransaction.toLocaleDateString('en-US', {
+      month: 'short'
+    })}`;
+  }
 
   const loadTransaction = async () => {
     setLoading(true);
@@ -81,6 +95,12 @@ const Dashboard: React.FC = () => {
 
     setTransactions(transactionsFormated);
 
+    const lastTransactionEntries = getLastTransactionDate(transactions, 'positive');
+
+    const lastTransactionExpensives = getLastTransactionDate(transactions, 'negative');
+
+    const totalInterval = `1 to ${lastTransactionExpensives}`
+
     const total = entriesTotal + expensiveTotal;
 
     setHighlightData({
@@ -88,19 +108,22 @@ const Dashboard: React.FC = () => {
         amount: entriesTotal.toLocaleString('en-US',{
           style: 'currency',
           currency: 'USD'
-        })
+        }),
+        lastTransaction:`Last income day ${lastTransactionEntries}`
       },
       expensives: {
         amount: expensiveTotal.toLocaleString('en-US',{
           style: 'currency',
           currency: 'USD'
-        })
+        }),
+        lastTransaction: `Last outcome day ${lastTransactionExpensives}`
       },
       total: {
         amount: total.toLocaleString('en-US',{
           style: 'currency',
           currency: 'USD'
-        })
+        }),
+        lastTransaction: totalInterval
       }
     });
 
@@ -141,21 +164,21 @@ const Dashboard: React.FC = () => {
             </Header>
             <HighlightCards>
               <HighlightCard
-                title="Income"
+                title="Income`s"
                 amount={highlightData?.entries?.amount}
-                lastTransaction="Last incomming at day 15 of may"
+                lastTransaction={highlightData?.entries?.lastTransaction}
                 type="positive"
               />
               <HighlightCard
-                title="Outcome"
+                title="Outcome`s"
                 amount={highlightData?.expensives?.amount}
-                lastTransaction="Last outcome at day 5 of may"
+                lastTransaction={highlightData?.expensives?.lastTransaction}
                 type="negative"
               />
               <HighlightCard
                 title="Total"
                 amount={highlightData?.total?.amount}
-                lastTransaction="01 to 16 of may"
+                lastTransaction={highlightData?.total?.lastTransaction}
                 type="total"
               />
             </HighlightCards>
