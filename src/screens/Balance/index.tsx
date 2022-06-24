@@ -1,4 +1,5 @@
 import {
+  ChartContainer,
   Container,
   Content,
   Header,
@@ -9,19 +10,25 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DataListProps } from '../Dashboard';
 import HistoryCard from '../../components/HistoryCard';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { TransactionCardDataProps } from '../../components/TransactionCard/index';
 import { VictoryPie } from 'victory-native';
 import { categories } from '../../utils/categories';
+import { useTheme } from 'styled-components';
 
 interface TotalByCategoryProps {
   key: string,
   name: string,
-  total: string,
-  color: string
+  total: number,
+  totalFormatted: string,
+  color: string,
+  percent: string;
 }
 
 const DATA_KEY = '@financesapp:transactions';
 
 const Summary: React.FC = () => {
+  const theme = useTheme();
   const [data, setData] = useState<TotalByCategoryProps[]>([]);
 
   const loadData = async () => {
@@ -30,6 +37,11 @@ const Summary: React.FC = () => {
 
     const expensives = responseParsed
       .filter((expensive: DataListProps) => expensive.type === 'negative')
+
+    const expensiveTotal = expensives
+      .reduce((acc: number, expensive: TransactionCardDataProps) => {
+          return acc + Number(expensive.price);
+    }, 0);
 
     const totalByCategory: TotalByCategoryProps[] = [];
 
@@ -43,16 +55,22 @@ const Summary: React.FC = () => {
       })
 
       if(categorySum > 0){
-        const total = categorySum.toLocaleString('en-US', {
+        const totalFormatted = categorySum.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD'
-        })
+        });
+
+        const total = categorySum;
+
+        const percent = `${(categorySum / expensiveTotal * 100).toFixed(0)}%`;
 
         totalByCategory.push({
           key: category.key,
           name: category.name,
           total,
-          color: category.color
+          totalFormatted,
+          color: category.color,
+          percent
         })
       }
     });
@@ -70,11 +88,22 @@ const Summary: React.FC = () => {
         <Title>Summary by categories</Title>
       </Header>
 
-      <VictoryPie
-        data={data}
-        x='name'
-        y='total'
-      />
+      <ChartContainer>
+        <VictoryPie
+          data={data}
+          colorScale={data.map(category => category.color)}
+          style={{
+            labels: {
+              fontSize: RFValue(18),
+              fontWeight: 'bold',
+              fill: theme.colors.shape
+            }
+          }}
+          labelRadius={100}
+          x='percent'
+          y='total'
+        />
+      </ChartContainer>
 
       <Content>
         {
@@ -82,7 +111,7 @@ const Summary: React.FC = () => {
             <HistoryCard
               key={item.key}
               title={item.name}
-              price={String(item.total)}
+              price={String(item.totalFormatted)}
               color={item.color}
             />
           )
