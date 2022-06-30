@@ -10,7 +10,7 @@ import {
   MonthSelectIcon,
   Title
 } from './styles';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { addMonths, format, subMonths } from 'date-fns';
 
 import { ActivityIndicator } from 'react-native';
@@ -22,6 +22,7 @@ import { TransactionCardDataProps } from '../../components/TransactionCard/index
 import { VictoryPie } from 'victory-native';
 import { categories } from '../../utils/categories';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 
 interface TotalByCategoryProps {
@@ -37,7 +38,7 @@ const DATA_KEY = '@financesapp:transactions';
 
 const Summary: React.FC = () => {
   const theme = useTheme();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [data, setData] = useState<TotalByCategoryProps[]>([]);
 
@@ -102,9 +103,9 @@ const Summary: React.FC = () => {
     setIsLoading(false);
   };
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     loadData();
-  },[selectedDate]);
+  },[selectedDate]));
 
   return (
     <Container>

@@ -10,9 +10,11 @@ import {
 } from '@expo-google-fonts/poppins';
 
 import AppLoading from 'expo-app-loading';
+import { AuthProvider } from './src/hooks/Auth';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import Routes from './src/routes/app.routes';
+import SignIn from './src/screens/SignIn';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from 'styled-components';
 import theme from './src/global/styles/theme';
@@ -32,7 +34,10 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <NavigationContainer>
         <StatusBar style='light' />
-        <Routes />
+        {/* <Routes /> */}
+        <AuthProvider>
+          <SignIn />
+        </AuthProvider>
       </NavigationContainer>
     </ThemeProvider>
   );
