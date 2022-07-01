@@ -1,3 +1,4 @@
+import { Alert, Animated } from 'react-native';
 import {
   Container,
   Footer,
@@ -9,16 +10,27 @@ import {
 } from './styles';
 import React, { useEffect } from 'react';
 
-import { Animated } from 'react-native';
 import AppleIcon from '../../assets/apple.svg';
 import GoogleIcon from '../../assets/google.svg';
 import Logo from '../../assets/logo.svg';
 import { RFValue } from 'react-native-responsive-fontsize';
 import SignInSocialButton from '../../components/SignInSocialButton';
+import { useAuth } from '../../hooks/Auth';
 
 const SignIn: React.FC = () => {
   const opacity = new Animated.Value(0);
   const translate = new Animated.Value(-400);
+
+  const { signInWithGoogle } = useAuth();
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error on authentication')
+    }
+  }
 
   useEffect(() => {
     Animated.timing(opacity, {
@@ -65,7 +77,7 @@ const SignIn: React.FC = () => {
             }
           ]
         }}>
-          <SignInSocialButton title="Sign in with Google" svg={GoogleIcon} />
+          <SignInSocialButton title="Sign in with Google" svg={GoogleIcon} onPress={handleSignInWithGoogle} />
           <SignInSocialButton title="Sign in with Apple" svg={AppleIcon} />
         </FooterWrapper>
       </Footer>
