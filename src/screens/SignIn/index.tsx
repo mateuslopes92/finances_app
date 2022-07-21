@@ -28,7 +28,7 @@ const SignIn: React.FC = () => {
       await signInWithGoogle();
     } catch (error) {
       console.log(error);
-      Alert.alert('Error on authentication')
+      Alert.alert('Error on authentication with Google account')
     }
   }
 
