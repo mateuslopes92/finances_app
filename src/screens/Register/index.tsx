@@ -27,6 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 import uuid from 'react-native-uuid';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useAuth } from '../../hooks/Auth';
 
 interface FormData {
   name: string,
@@ -44,7 +45,7 @@ const schema = Yup.object().shape({
     .required('The price is required')
 })
 
-const DATA_KEY = '@financesapp:transactions';
+const DATA_KEY = '@financesapp:transactions_user';
 
 const Register: React.FC = () => {
   const { colors} = useTheme();
@@ -55,6 +56,7 @@ const Register: React.FC = () => {
     key: 'category',
     name: 'Category'
   });
+  const { user } = useAuth();
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: yupResolver(schema)
   });
@@ -90,7 +92,7 @@ const Register: React.FC = () => {
     };
 
     try {
-      const dataStored = await AsyncStorage.getItem(DATA_KEY);
+      const dataStored = await AsyncStorage.getItem(`${DATA_KEY}:${user.id}`);
       const dataStoredParsed = dataStored ? JSON.parse(dataStored) : [];
 
       const dataList = [
@@ -98,7 +100,7 @@ const Register: React.FC = () => {
         newTransaction
       ];
 
-      await AsyncStorage.setItem(DATA_KEY, JSON.stringify(dataList));
+      await AsyncStorage.setItem(`${DATA_KEY}:${user.id}`, JSON.stringify(dataList));
 
       setTransactionType('');
       setCategory({

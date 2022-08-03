@@ -9,7 +9,7 @@ import { useTheme } from 'styled-components';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-const Routes: React.FC = () => {
+const AppRoutes: React.FC = () => {
   const { colors } = useTheme();
   return (
     <Navigator
@@ -67,4 +67,4 @@ const Routes: React.FC = () => {
   );
 }
 
-export default Routes;
+export default AppRoutes;

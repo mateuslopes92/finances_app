@@ -17,7 +17,7 @@ import {
 } from './styles';
 import React, { useCallback, useEffect, useState } from 'react';
 import TransactionCard, { TransactionCardDataProps } from '../../components/TransactionCard';
-
+import { useAuth } from '../../hooks/Auth';
 import { ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HighlightCard from '../../components/HighlightCard';
@@ -39,20 +39,25 @@ interface HighLightData {
   total: HighlightProps
 }
 
-const DATA_KEY = '@financesapp:transactions';
+const DATA_KEY = '@financesapp:transactions_user';
 
 const Dashboard: React.FC = () => {
   const [ loading, setLoading ] = useState(false);
   const [ transactions, setTransactions ] = useState<DataListProps[]>([]);
   const [ highlightData, setHighlightData ] = useState<HighLightData>({} as HighLightData);
+  const { signOut, user } = useAuth();
   const theme = useTheme();
 
   const getLastTransactionDate = (
     collection: DataListProps[],
     type: 'positive' | 'negative'
     ) => {
-    const lastTransaction = new Date(Math.max.apply(Math, collection
-      .filter(transaction => transaction.type === type)
+    const collectionFilttered = collection.filter(transaction => transaction.type === type);
+
+    if(collectionFilttered.length === 0)
+      return 0;
+
+    const lastTransaction = new Date(Math.max.apply(Math, collectionFilttered
       .map(transaction => new Date(transaction.date).getTime())));
 
     return `${lastTransaction.getDate()} of ${lastTransaction.toLocaleDateString('en-US', {
@@ -62,7 +67,7 @@ const Dashboard: React.FC = () => {
 
   const loadTransaction = async () => {
     setLoading(true);
-    const response = await AsyncStorage.getItem(DATA_KEY);
+    const response = await AsyncStorage.getItem(`${DATA_KEY}:${user.id}`);
     const transactions = response ? JSON.parse(response) : [];
 
     let entriesTotal = 0;
@@ -99,7 +104,9 @@ const Dashboard: React.FC = () => {
 
     const lastTransactionExpensives = getLastTransactionDate(transactions, 'negative');
 
-    const totalInterval = `1 to ${lastTransactionExpensives}`
+    const totalInterval = lastTransactionExpensives
+      ? `1 to ${lastTransactionExpensives}`
+      : `No transactions`
 
     const total = entriesTotal + expensiveTotal;
 
@@ -109,14 +116,18 @@ const Dashboard: React.FC = () => {
           style: 'currency',
           currency: 'USD'
         }),
-        lastTransaction:`Last income day ${lastTransactionEntries}`
+        lastTransaction: lastTransactionEntries 
+          ? `Last income day ${lastTransactionEntries}`
+          : `No transactions`
       },
       expensives: {
         amount: expensiveTotal.toLocaleString('en-US',{
           style: 'currency',
           currency: 'USD'
         }),
-        lastTransaction: `Last outcome day ${lastTransactionExpensives}`
+        lastTransaction: lastTransactionExpensives 
+          ? `Last outcome day ${lastTransactionExpensives}`
+          : `No transactions`
       },
       total: {
         amount: total.toLocaleString('en-US',{
@@ -150,14 +161,14 @@ const Dashboard: React.FC = () => {
             <Header>
               <UserWrapper>
                 <UserInfo>
-                  <Photo source={{ uri: 'https://avatars.githubusercontent.com/u/43526801?v=4' }} />
+                  <Photo source={{ uri: user.photo }} />
                   <User>
                     <UserGreeting>Hello, </UserGreeting>
-                    <UserName>Mateus</UserName>
+                    <UserName>{user?.name || ''}</UserName>
                   </User>
                 </UserInfo>
 
-                <LogoutButton onPress={() => {}}>
+                <LogoutButton onPress={signOut}>
                   <LogoffIcon name="power" />
                 </LogoutButton>
               </UserWrapper>

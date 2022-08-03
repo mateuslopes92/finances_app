@@ -24,6 +24,7 @@ import { categories } from '../../utils/categories';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
+import { useAuth } from '../../hooks/Auth';
 
 interface TotalByCategoryProps {
   key: string,
@@ -34,13 +35,14 @@ interface TotalByCategoryProps {
   percent: string;
 }
 
-const DATA_KEY = '@financesapp:transactions';
+const DATA_KEY = '@financesapp:transactions_user';
 
 const Summary: React.FC = () => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [data, setData] = useState<TotalByCategoryProps[]>([]);
+  const { user } = useAuth();
 
   const handleDateChange = async (action: 'next' | 'prev') => {
     if (action === 'next'){
@@ -52,7 +54,7 @@ const Summary: React.FC = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    const response = await AsyncStorage.getItem(DATA_KEY);
+    const response = await AsyncStorage.getItem(`${DATA_KEY}:${user.id}`);
     const responseParsed = response ? JSON.parse(response) : [];
 
     const expensives = responseParsed
